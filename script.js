@@ -24,42 +24,12 @@ const fetchRandomCocktail = async () => {
 
         <a href="#" class="see-more" data-id="${cocktail.idDrink}">See More</a>
     `;
-    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    const exists = favorites.some(fav=>fav.idDrink===cocktail.idDrink);
-    if(!exists)
-    {
-        document.getElementById("fav").classList.remove("fav-exist")
-        document.getElementById("fav").classList.add("fav")
-        
-       console.log("this cocktail not exist in favorites")
-    }
-    else
-    {
-        console.log(cocktail.strDrink," is already added");
-        document.getElementById("fav").classList.add("fav-exist")
-        document.getElementById("fav").classList.remove("fav")
-        
-    }
-    document.getElementById("fav").addEventListener('click', (e) => {   
-        console.log(e.target.className);
-        if(e.target.className=="fav")
-        {
-
-            saveToFavorites(cocktail);
-            document.getElementById("fav").classList.add("fav-exist") 
-            document.getElementById("fav").classList.remove("fav")   
-        }
-        else
-        {
-            removeFromFavorites(cocktail)
-            document.getElementById("fav").classList.add("fav") 
-            document.getElementById("fav").classList.remove("fav-exist")   
-       
-        }
-        
-    });
+    
+    favHandel(cocktail);
 
 };
+
+
 
 
 //home
@@ -152,16 +122,17 @@ const fetchRandomCocktail = async () => {
             .map(drink => `
                 <div class="cocktail-card">
                     <li>
-                        <a href="#" class="see-more" data-id="${drink.idDrink}">${drink.strDrink}</a>
+                        
+                    <a href="#" class="see-more" data-id="${drink.idDrink}">${drink.strDrink}</a>
+
                         <img class="cocktail-img" src="${drink.strDrinkThumb}" alt="${drink.strDrink}">
 
                         </li>
-                      <button id="fav"> Save to favorit</button>
                     
 
                 </div>
             `).join('') || '<li>No results found</li>';
-    };
+        };
 
     document.addEventListener('submit', async (e) => {
         if (e.target.id === 'search-form') {
@@ -178,7 +149,10 @@ const fetchRandomCocktail = async () => {
 
             if (data.drinks) {
                 displaySearchResults(data.drinks, categoryValue,ingredientValue,glassValue);
-              
+             data.drinks.forEach(drink => {
+                favHandel(drink);
+                
+             });
                 
             } else {
                 document.getElementById('search-results').innerHTML = '<li>No results found</li>';
@@ -190,6 +164,9 @@ const fetchRandomCocktail = async () => {
     //----
     //fav
     const loadFavoritesPage = () => {
+       
+       
+       
         const content = document.getElementById("content"); // Ensure this element exists in your HTML
     
         const favs = JSON.parse(localStorage.getItem("favorites")) || [];
@@ -209,8 +186,18 @@ const fetchRandomCocktail = async () => {
             </div>
             `;
             favoritesList.appendChild(listItem);
+           
+
         });
         console.log("There are", favs.length, "favorites.");
+      
+
+        // favs.forEach(fav => {
+        //     favHandel(fav);
+        // }); 
+
+
+
     };
     
 
@@ -225,6 +212,9 @@ const fetchRandomCocktail = async () => {
 //details sidan
 
 document.addEventListener('click', async (e) => {
+  
+  
+  
     if (e.target.classList.contains('see-more')) {
         const cocktailId = e.target.getAttribute('data-id');
         const response = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${cocktailId}`);
@@ -233,6 +223,7 @@ document.addEventListener('click', async (e) => {
 
         document.getElementById('content').innerHTML = `
             <h1>${cocktail.strDrink}</h1>
+             <button id="fav"  aria-label="favorite"></button>
             <img src="${cocktail.strDrinkThumb}" alt="${cocktail.strDrink}">
             <p><strong>Category:</strong> ${cocktail.strCategory}</p>
             <p><strong>Glass:</strong> ${cocktail.strGlass}</p>
@@ -248,7 +239,9 @@ document.addEventListener('click', async (e) => {
             <button id="back-button">Go Back</button>
 
         `;
-    
+         
+        favHandel(cocktail);
+
         const goToPreviousPage = () => {
             window.location.hash ='#home'
             history.go(-1)
@@ -298,7 +291,7 @@ const saveToFavorites = (cocktail) => {
     const exists = favorites.some(fav=>fav.idDrink===cocktail.idDrink);
     if(!exists)
     {
-        console.log("cocktail added")
+        console.log(cocktail.strDrink,"cocktail added")
         favorites.push(cocktail);
         localStorage.setItem('favorites', JSON.stringify(favorites));
         
@@ -316,17 +309,62 @@ const loadFavorites = () => {
 };
 
 
+function favHandel(cocktail)
+{
+
+
+const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    const exists = favorites.some(fav=>fav.idDrink===cocktail.idDrink);
+    if(!exists)
+    {
+        document.getElementById("fav").classList.remove("fav-exist")
+        document.getElementById("fav").classList.add("fav")
+        
+       console.log(cocktail.strDrink ,"    not exist in favorites")
+    }
+    else
+    {
+        console.log(cocktail.strDrink," is already added");
+        document.getElementById("fav").classList.add("fav-exist")
+        document.getElementById("fav").classList.remove("fav")
+        
+    }
+    document.getElementById("fav").addEventListener('click', (e) => {   
+        console.log(e.target.className);
+        if(e.target.className=="fav")
+        {
+
+            saveToFavorites(cocktail);
+            document.getElementById("fav").classList.add("fav-exist") 
+            document.getElementById("fav").classList.remove("fav")   
+        }
+        else
+        {
+            removeFromFavorites(cocktail)
+            document.getElementById("fav").classList.add("fav") 
+            document.getElementById("fav").classList.remove("fav-exist")   
+       
+        }
+        
+    });
+
+}
 
 //to fix
+// js
 
-//if fav already added
-//||remove button from 
+//(done) if fav already added
+//(done) ||remove button from 
+
+
+//(done) create fav in details page
 
 //prev button 
 //|| make content hide and active to every page
+
 // sesrch input is required
 // || to improve if user select ingredient or one of selection it gets every matching of cocktails with thats query
 
 
-
+// css
 //css loader
