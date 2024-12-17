@@ -1,0 +1,166 @@
+img
+{
+    width: 250px;
+    height: 250px;
+}
+.logo{
+    width: 250px;
+    height: 50px;
+}
+
+/* Define variables in :root */
+:root {
+    --primary-color: white;      /* Blue for navigation */
+    --secondary-color: #ffdd57;   /* Yellow for hover links */
+    --background-color: #f9f9f9;  /* Light gray background */
+    --text-color: black;           /* Main text color */
+    --button-color: #28a745;      /* Green for buttons */
+    --button-hover-color: #218838; /* Darker green on hover */
+    --card-bg-color: #ffffff;     /* White background for main content */
+    --shadow-color: rgba(0, 0, 0, 0.1); /* Light shadow color */
+    --font-family: Arial, sans-serif; /* Default font */
+}
+
+/* General Reset */
+body {
+    margin: 0;
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    
+}
+
+/* Navigation Bar */
+nav {
+    background-color: var(--primary-color);
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px var(--shadow-color);
+
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--card-bg-color); /* White text */
+    font-size: 16px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+    color: black;
+}
+
+nav ul li a:hover {
+    color: var(--secondary-color); /* Yellow on hover */
+}
+
+/* Main Content */
+main {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 800px;
+    background-color: var(--card-bg-color);
+    box-shadow: 0 4px 8px var(--shadow-color);
+    border-radius: 8px;
+}
+
+/* Heading and Button */
+h1 {
+    font-size: 24px;
+    color: var(--text-color);
+    text-align: center;
+    
+}
+
+button {
+   
+  
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--card-bg-color); /* White text */
+    background-color: var(--button-color);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--button-hover-color); /* Dark green */
+}
+
+/* card in search */
+
+.cocktail-card {
+
+    width: 350px;
+    height: 350px;
+    background-color: #fff; /* White background for the card */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    overflow: hidden; /* Ensures child elements don't overflow */
+    margin: 20px; /* Space around the card */
+    transition: transform 0.3s ease; /* Smooth scaling on hover */
+}
+
+.cocktail-card:hover {
+    transform: scale(1.05); /* Slightly enlarge the card on hover */
+}
+
+.cocktail-card li {
+    list-style: none; /* Remove default list styling */
+    padding: 15px; /* Padding inside the card */
+    text-align: center; /* Center the text */
+}
+
+.cocktail-card .see-more {
+    display: block; /* Make the link a block element */
+    font-size: 1.2em; /* Larger font size for the drink name */
+    color: #333; /* Dark text color */
+    text-decoration: none; /* Remove underline */
+    margin-bottom: 10px; /* Space between the link and image */
+    transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.cocktail-card .see-more:hover {
+    color: #007BFF; /* Change color on hover */
+}
+
+.cocktail-card .cocktail-img {
+    width: 100%; /* Full width of the card */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 10px; /* Match the card's rounded corners */
+    transition: transform 0.3s ease; /* Smooth scaling on hover */
+}
+
+.cocktail-card .cocktail-img:hover {
+    transform: scale(1.1); /* Slightly enlarge the image on hover */
+}
+
+
+
+#fav
+{
+    background-color: transparent;
+    color: gray;
+}
+
+.fav-exist::before
+{
+content: "-";
+}
+.fav::before
+{
+content: "+";
+}
