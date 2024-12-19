@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const content = document.getElementById('content');
+    const searchContent = document.getElementById('search-content');
+    const favContent = document.getElementById('fav-content');
+    const detailsContent = document.getElementById('details-content');
+const pages = document.querySelectorAll(".page")
     const homeLink = document.getElementById('home-link');
     const searchLink = document.getElementById('search-link');
     const favoritesLink = document.getElementById('favorites-link');
@@ -24,7 +28,11 @@ const fetchRandomCocktail = async () => {
 
         <a href="#" class="see-more" data-id="${cocktail.idDrink}">See More</a>
     `;
-    
+    document.querySelector(".see-more").addEventListener("click",()=>{
+        showPage("details-content");
+        console.log("clicked ")
+                })
+
     favHandel(cocktail);
 
 };
@@ -43,10 +51,13 @@ const fetchRandomCocktail = async () => {
         fetchRandomCocktail();
         document.getElementById("new-cocktail-btn").addEventListener("click",()=>{
             fetchRandomCocktail();
+
         })
+       
 
     };
-    
+
+
 
 
     //search
@@ -72,12 +83,15 @@ const fetchRandomCocktail = async () => {
 
 //display search page 
     const renderSearchPage = (categories, ingredients,glass) => {
+       
+       
+    
         const categoryOptions = categories.map(cat => `<option value="${cat.strCategory}">${cat.strCategory}</option>`).join('');
         const ingredientOptions = ingredients.map(ing => `<option value="${ing.strIngredient1}">${ing.strIngredient1}</option>`).join('');
         const glassOptions = glass.map(glas => `<option value="${glas.strGlass}">${glas.strGlass}</option>`).join('');
 
 
-        content.innerHTML = `
+        searchContent.innerHTML = `
             <h1>Search Cocktails</h1>
             <form id="search-form">
                 <input type="text" id="search-input" placeholder="Enter cocktail name">
@@ -97,6 +111,11 @@ const fetchRandomCocktail = async () => {
             </form>
             <ul id="search-results"></ul>
         `;
+
+
+      
+
+        
     };
 
 
@@ -132,7 +151,22 @@ const fetchRandomCocktail = async () => {
 
                 </div>
             `).join('') || '<li>No results found</li>';
+      
+      
+        // resultsContainer.forEach(result=>{
+            
+        // })
+        
+     window.addEventListener("click",(e)=>{
+        if(e.target.className=="see-more")
+        {
+            showPage("details-content");
+            console.log("clicked in search page");
+                  
+        }})
         };
+        
+      
 
     document.addEventListener('submit', async (e) => {
         if (e.target.id === 'search-form') {
@@ -166,12 +200,13 @@ const fetchRandomCocktail = async () => {
     const loadFavoritesPage = () => {
        
        
+
        
-        const content = document.getElementById("content"); // Ensure this element exists in your HTML
+        const favContent = document.getElementById("fav-content"); // Ensure this element exists in your HTML
     
         const favs = JSON.parse(localStorage.getItem("favorites")) || [];
             console.log(favs);
-            content.innerHTML = `
+            favContent.innerHTML = `
             <h1>Your Favorites</h1>
             <ul id="favorites-list"></ul>
         `;
@@ -182,30 +217,69 @@ const fetchRandomCocktail = async () => {
             <div class="cocktail-card">
             <p id="fav-name"> ${fav.strDrink}</p>
             <img id="fav-img" src="${fav.strDrinkThumb}"></img>
-        <a href="#" class="see-more" data-id="${fav.idDrink}">see more</a>
+        <a href="#" id="see-more" class="see-more" data-id="${fav.idDrink}">see more</a>
             </div>
             `;
+            // document.querySelector(".see-more").addEventListener("click",()=>{
+            //     showPage("details-content");
+            //     console.log("clicked ")
+            //             })
             favoritesList.appendChild(listItem);
+        
            
 
         });
+       
+
         console.log("There are", favs.length, "favorites.");
-      
+      window.addEventListener("click",(e)=>{
+        console.log(e.target.id)
+        if(e.target.id=="see-more")
+        {
+          
+                    showPage("details-content");
+                    // detailsContent.style.display = "block"
+                         console.log("u clicked")  
+                
+                
+           
+        }
+      })
 
         // favs.forEach(fav => {
         //     favHandel(fav);
         // }); 
 
 
-
+       
     };
     
 
 
-    homeLink.addEventListener('click', () => loadHomePage());
-    searchLink.addEventListener('click', () => loadSearchPage());
-    favoritesLink.addEventListener('click', () => loadFavoritesPage());
+    homeLink.addEventListener('click', () => {
+        loadHomePage();
+         showPage(content);
+         content.style.display="block";
+                  
+        
+        });
+    searchLink.addEventListener('click', (e) => {
+       e.preventDefault()
+        loadSearchPage(); 
+        showPage(searchContent);
+        searchContent.style.display="block";
+       
+    })
+    favoritesLink.addEventListener('click', () => {
+    loadFavoritesPage(); 
+    showPage(favContent)
+    favContent.style.display="block";
+   
+});
     loadHomePage(); 
+
+
+
 });
 
 
@@ -221,7 +295,7 @@ document.addEventListener('click', async (e) => {
         const data = await response.json();
         const cocktail = data.drinks[0];
 
-        document.getElementById('content').innerHTML = `
+        document.getElementById('details-content').innerHTML = `
             <h1>${cocktail.strDrink}</h1>
              <button id="fav"  aria-label="favorite"></button>
             <img src="${cocktail.strDrinkThumb}" alt="${cocktail.strDrink}">
@@ -239,24 +313,25 @@ document.addEventListener('click', async (e) => {
             <button id="back-button">Go Back</button>
 
         `;
+        document.getElementById("back-button").addEventListener("click",()=>{
+           pageHistory.pop();
+           const prevPage = pageHistory.pop();
+           showPage(prevPage);
+                    })
          
         favHandel(cocktail);
 
-        const goToPreviousPage = () => {
-            window.location.hash ='#home'
-            history.go(-1)
-        };
+       
 
        
 
 
         
         // Example button
-        document.getElementById('back-button').addEventListener('click', goToPreviousPage);
         
     }
 
-  
+    
 
 });
 
@@ -350,17 +425,46 @@ const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 
 }
 
+let currentPage = "content";
+let pageHistory= [currentPage];
+function showPage(pageID)
+{
+    const pages = document.querySelectorAll(".page")
+    pages.forEach(page=>{
+        page.style.display = page.id ==pageID ? "block" : "none";
+       
+    })
+
+
+   
+        pageHistory.push(pageID.id||pageID);
+        console.log("on  content : ",pageID);
+    console.log("on  links : ",pageID.id||"not link ..thats details content");
+    console.log("page history   ",currentPage);
+    
+   
+    
+
+}    
+
+
+
+
+
+
+
+//to do 19 dec
+//do back button in favorites and do search also
 //to fix
 // js
+//fav in main after go to favorties details then to main 
 
 //(done) if fav already added
 //(done) ||remove button from 
-
-
 //(done) create fav in details page
+//(done) prev button 
+// (done) && make content hide and active to every page 
 
-//prev button 
-//|| make content hide and active to every page
 
 // sesrch input is required
 // || to improve if user select ingredient or one of selection it gets every matching of cocktails with thats query
