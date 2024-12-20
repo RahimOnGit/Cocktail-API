@@ -143,6 +143,7 @@ const fetchRandomCocktail = async () => {
         searchResults = filteredResults;
     
         renderNextBatch();
+
     }
     
     const renderNextBatch = () => {
@@ -159,13 +160,19 @@ const fetchRandomCocktail = async () => {
                 </li>
             </div>
         `).join('');
-    
+
+      
+        resultsContainer.querySelector(".see-more").addEventListener("click",()=>{
+            showPage("details-content");
+            console.log("clicked ")
+                    });
         currentBatch++;
     
-        // Hide the "Load More" button if no more results
         if (currentBatch * size >= searchResults.length) {
             document.getElementById('load-more-btn').style.display = 'none';
         }
+
+       
     };
         
     document.addEventListener('submit', async (e) => {
