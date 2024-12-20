@@ -155,24 +155,37 @@ const fetchRandomCocktail = async () => {
         resultsContainer.innerHTML += nextBatch.map(drink => `
             <div class="cocktail-card">
                 <li>
-                    <a href="#" class="see-more" data-id="${drink.idDrink}">${drink.strDrink}</a>
+                    <a href="#" id="see-more" class="see-more" data-id="${drink.idDrink}">${drink.strDrink}</a>
                     <img class="cocktail-img" src="${drink.strDrinkThumb}" alt="${drink.strDrink}">
                 </li>
             </div>
         `).join('');
 
       
-        resultsContainer.querySelector(".see-more").addEventListener("click",()=>{
-            showPage("details-content");
-            console.log("clicked ")
-                    });
+        // resultsContainer.querySelectorAll(".see-more").addEventListener("click",()=>{
+        //     showPage("details-content");
+        //     console.log("clicked ")
+        //             });
         currentBatch++;
     
         if (currentBatch * size >= searchResults.length) {
             document.getElementById('load-more-btn').style.display = 'none';
         }
 
-       
+        
+      window.addEventListener("click",(e)=>{
+        console.log(e.target.id);
+        if(e.target.id=="see-more")
+        {
+          
+         showPage("details-content");
+                    
+                    // detailsContent.style.display = "block"
+                         console.log("u clicked")  
+           
+        }
+    })
+
     };
         
     document.addEventListener('submit', async (e) => {
