@@ -1,3 +1,6 @@
+let searchResults = [];
+let currentBatch = 0; 
+const size = 5;
 document.addEventListener('DOMContentLoaded', () => {
     const content = document.getElementById('content');
     const searchContent = document.getElementById('search-content');
@@ -8,6 +11,7 @@ const pages = document.querySelectorAll(".page")
     const searchLink = document.getElementById('search-link');
     const favoritesLink = document.getElementById('favorites-link');
 
+   
 
 
 
@@ -43,7 +47,7 @@ const fetchRandomCocktail = async () => {
 //home
     const loadHomePage = () => {
         content.innerHTML = `
-            <h1>Welcome to the Cocktail website</h1>
+            <h1>Random cocktail</h1>
             <div id="random-cocktail">
             </div>
             <button id="new-cocktail-btn">Get New Cocktail</button>
@@ -58,11 +62,9 @@ const fetchRandomCocktail = async () => {
     };
 
 
-
-
+    
     //search
 
-    //load Categories And Ingredients
     const loadCategoriesAndIngredients = async () => {
         const categoryResponse = await fetch("https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list");
         const ingredientResponse = await fetch("https://www.thecocktaildb.com/api/json/v1/1/list.php?i=list");
@@ -110,11 +112,12 @@ const fetchRandomCocktail = async () => {
                 <button type="submit">Search</button>
             </form>
             <ul id="search-results"></ul>
+
+    <button id="load-more-btn" style="display: none;">Load More</button>
         `;
 
-
-      
-
+        document.getElementById('load-more-btn').addEventListener('click', renderNextBatch);
+    
         
     };
 
@@ -128,111 +131,68 @@ const fetchRandomCocktail = async () => {
 
 
 
-
-    const displaySearchResults = (drinks, categoryFilter,ingredientFilter,glassFilter) => {
-
-       
-//  const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-//     const exists = favorites.some(fav=>fav.idDrink===cocktail.idDrink);
+    const displaySearchResults = (drinks, categoryFilter, ingredientFilter, glassFilter) => {
+        
+        const filteredResults = drinks.filter(drink =>
+            (!categoryFilter || drink.strCategory === categoryFilter) &&
+            (!ingredientFilter || drink.strIngredient1 === ingredientFilter) &&
+            (!glassFilter || drink.strGlass === glassFilter)
+        );
     
-          
+        
+        searchResults = filteredResults;
+    
+        renderNextBatch();
+    }
+    
+    const renderNextBatch = () => {
         const resultsContainer = document.getElementById('search-results');
+    
         
-        resultsContainer.innerHTML = drinks
-            .filter(drink =>
-                ( !categoryFilter || drink.strCategory === categoryFilter) &&
-            (!ingredientFilter || drink.strIngredient1 ===ingredientFilter)&&
-        (!glassFilter||drink.strGlass===glassFilter))
-            .map(drink => `
-                <div class="cocktail-card">
-                    <li>
-                        
+        const nextBatch = searchResults.slice(currentBatch * size, (currentBatch + 1) * size);
+    
+        resultsContainer.innerHTML += nextBatch.map(drink => `
+            <div class="cocktail-card">
+                <li>
                     <a href="#" class="see-more" data-id="${drink.idDrink}">${drink.strDrink}</a>
-      
- <!-- <button id="fav" data-id=${drink.idDrink} class="fav"></button>  -->
-                        <img class="cocktail-img" src="${drink.strDrinkThumb}" alt="${drink.strDrink}">
-
-                        </li>
-                    
-
-                </div>
-            `
-
-    ).join('') || '<li>No results found</li>';
-      
-
-
-       
-
-// drinks.forEach(drink=>{favHandel(drink)
-
-
-
-// }
-// );
-//        window.addEventListener("click", (e) => {
-// console.log(e.target.id);
-// const drinkId = e.target.getAttribute("data-id");
-// const drink = drinks.find(d=> d.idDrink===drinkId);
-// console.log("here the drink ",drink);
-
-//         if(e.target.className ==="fav")
-//         {
-//             saveToFavorites(drink);
-            
-
-//         }
+                    <img class="cocktail-img" src="${drink.strDrinkThumb}" alt="${drink.strDrink}">
+                </li>
+            </div>
+        `).join('');
+    
+        currentBatch++;
+    
+        // Hide the "Load More" button if no more results
+        if (currentBatch * size >= searchResults.length) {
+            document.getElementById('load-more-btn').style.display = 'none';
+        }
+    };
         
-               
-            
-//                 // removeFromFavorites(cocktailId); 
-              
-
-//             })
-        // resultsContainer.forEach(result=>{
-            
-        // })
-        
-     window.addEventListener("click",(e)=>{
-        if(e.target.className=="see-more")
-        {
-            showPage("details-content");
-            console.log("clicked in search page");
-                  
-        }})
-        };
-        
-      
-
     document.addEventListener('submit', async (e) => {
         if (e.target.id === 'search-form') {
             e.preventDefault();
-            document.getElementById('search-results').innerHTML ="";
-
+    
             const searchInput = document.getElementById('search-input').value;
             const categoryValue = document.getElementById('category').value;
             const ingredientValue = document.getElementById('ingredient').value;
             const glassValue = document.getElementById('glass').value;
-
+    
             const response = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${searchInput}`);
             const data = await response.json();
-
-           
+    
             if (data.drinks) {
-                displaySearchResults(data.drinks, categoryValue,ingredientValue,glassValue);
-
-               
-                
+                currentBatch = 0; // Reset batch counter
+                document.getElementById('search-results').innerHTML = ''; // Clear previous results
+                document.getElementById('load-more-btn').style.display = 'block'; // Show the button
+    
+                displaySearchResults(data.drinks, categoryValue, ingredientValue, glassValue);
             } else {
                 document.getElementById('search-results').innerHTML = '<li>No results found</li>';
+                document.getElementById('load-more-btn').style.display = 'none';
             }
-
-//             if(e.target.id=="fav")
-//             {
-// favHandel(data.drinks);
-//             }
         }
     });
+    
 
   
     //----

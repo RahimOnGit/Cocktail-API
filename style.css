@@ -8,20 +8,20 @@ img
     height: 50px;
 }
 
-/* Define variables in :root */
+
 :root {
-    --primary-color: white;      /* Blue for navigation */
-    --secondary-color: #ffdd57;   /* Yellow for hover links */
-    --background-color: #f9f9f9;  /* Light gray background */
-    --text-color: black;           /* Main text color */
-    --button-color: #28a745;      /* Green for buttons */
-    --button-hover-color: #218838; /* Darker green on hover */
-    --card-bg-color: #ffffff;     /* White background for main content */
-    --shadow-color: rgba(0, 0, 0, 0.1); /* Light shadow color */
-    --font-family: Arial, sans-serif; /* Default font */
+    --primary-color: white;      
+    --secondary-color: #F3C178;   
+    --background-color: #f9f9f9;  
+    --text-color: black;           
+    --button-color: #FE5E41;      
+    --button-hover-color: #F3C178; 
+    --card-bg-color: #ffffff;    
+    --shadow-color: rgba(0, 0, 0, 0.1); 
+    --font-family: Arial, sans-serif; 
 }
 
-/* General Reset */
+
 body {
     margin: 0;
     font-family: var(--font-family);
@@ -30,7 +30,6 @@ body {
     
 }
 
-/* Navigation Bar */
 nav {
     background-color: var(--primary-color);
     padding: 10px 20px;
@@ -97,70 +96,161 @@ button {
 }
 
 button:hover {
-    background-color: var(--button-hover-color); /* Dark green */
+    background-color: var(--button-hover-color); 
 }
 
-/* card in search */
+
 
 .cocktail-card {
-
+display: flex;
+flex-direction: column;
     width: 350px;
-    height: 350px;
-    background-color: #fff; /* White background for the card */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    overflow: hidden; /* Ensures child elements don't overflow */
-    margin: 20px; /* Space around the card */
-    transition: transform 0.3s ease; /* Smooth scaling on hover */
+   
+    background-color: #fff; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+    overflow: hidden; 
+    margin: 20px; 
+    transition: transform 0.3s ease; 
+padding: 5%;
+align-items: center;
 }
 
 .cocktail-card:hover {
-    transform: scale(1.05); /* Slightly enlarge the card on hover */
+    transform: scale(1.05); 
 }
 
 .cocktail-card li {
-    list-style: none; /* Remove default list styling */
-    padding: 15px; /* Padding inside the card */
-    text-align: center; /* Center the text */
+    list-style: none; 
+    padding: 15px; 
+    text-align: center; 
 }
 
 .cocktail-card .see-more {
-    display: block; /* Make the link a block element */
-    font-size: 1.2em; /* Larger font size for the drink name */
-    color: #333; /* Dark text color */
-    text-decoration: none; /* Remove underline */
-    margin-bottom: 10px; /* Space between the link and image */
-    transition: color 0.3s ease; /* Smooth color transition */
+    display: block;
+    margin-top: 10px ;
+  
 }
 
 .cocktail-card .see-more:hover {
-    color: #007BFF; /* Change color on hover */
+    background-color: var(--button-hover-color); 
 }
 
 .cocktail-card .cocktail-img {
-    width: 100%; /* Full width of the card */
-    height: auto; /* Maintain aspect ratio */
-    border-radius: 10px; /* Match the card's rounded corners */
-    transition: transform 0.3s ease; /* Smooth scaling on hover */
+    width: 100%; 
+    height: auto; 
+    border-radius: 10px; 
+    transition: transform 0.3s ease; 
 }
 
 .cocktail-card .cocktail-img:hover {
-    transform: scale(1.1); /* Slightly enlarge the image on hover */
+    transform: scale(1.1); 
 }
 
-
+#random-cocktail
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+img
+{
+    border-radius: 1%;
+}
 
 #fav
 {
     background-color: transparent;
     color: gray;
+    width: 50px;
+    height: 50px;
 }
 
 .fav-exist::before
 {
 content: "-";
+font-size: 26px;
+color: red;
+
 }
 .fav::before
 {
 content: "+";
+font-size: 26px;
+color:  #00A878;
+}
+
+.see-more
+{
+    width: 100px;
+   padding: 10px;
+   background-color:  var(--button-color);
+   text-decoration: none;
+   color: var(--background-color);
+   text-align: center;
+   border-radius: 2px;
+   
+} 
+.see-more:hover
+{
+ 
+   background-color:  var(--button-hover-color);
+   font-size: larger;
+  
+   
+} 
+
+
+#details-content
+{
+    display: flex;
+    flex-direction: column;
+  
+
+  width: 100%;
+  height: 100%;
+  padding: 5%;
+
+
+   
+}
+p
+{
+    border-bottom: 1px solid gainsboro;
+    padding: 5%;
+}
+
+#details-content h2
+{
+    width: 20%;
+    border-bottom: 1px solid gainsboro;
+    padding: 5%;
+}
+#details-content button
+{
+    margin-top: 2%;
+   align-items: center;
+   align-self: center;
+   align-content: center;
+}
+
+
+#search-form 
+{
+display: flex;
+
+
+
+}
+h1
+{
+    border-bottom: 1px solid gainsboro;
+    padding: 5%;
+}
+
+ul
+{
+list-style: none;
+
 }
