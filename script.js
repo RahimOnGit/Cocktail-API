@@ -26,7 +26,7 @@ const fetchRandomCocktail = async () => {
 
     document.getElementById('random-cocktail').innerHTML = `
         <h2>${cocktail.strDrink}</h2>
-          <button id="fav"  aria-label="favorite"></button>
+          <button id="homefav"  aria-label="favorite"></button>
         <img src="${cocktail.strDrinkThumb}" alt="${cocktail.strDrink}">
       
 
@@ -36,7 +36,7 @@ const fetchRandomCocktail = async () => {
         showPage("details-content");
         console.log("clicked ")
                 })
-
+console.log(cocktail)
     favHandel(cocktail);
 
 };
@@ -132,15 +132,63 @@ const fetchRandomCocktail = async () => {
 
 
     const displaySearchResults = (drinks, categoryFilter, ingredientFilter, glassFilter) => {
-        
         const filteredResults = drinks.filter(drink =>
             (!categoryFilter || drink.strCategory === categoryFilter) &&
             (!ingredientFilter || drink.strIngredient1 === ingredientFilter) &&
             (!glassFilter || drink.strGlass === glassFilter)
+       
+     
         );
-    
-        
+     
         searchResults = filteredResults;
+
+    //    searchResults.forEach(c=> favHandel(c))
+        console.log(searchResults);
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        console.log(favorites);
+        
+        const updated = searchResults.map(res=>res.idDrink);
+        const favs = favorites.map(fav=>fav.idDrink);
+    
+        console.log(updated);
+        console.log(favs);
+
+       const fav = document.querySelectorAll("#fav");
+       fav.forEach(element => {
+        element.setAttribute("class","fav")
+        
+       });
+
+
+       const f  = document.querySelectorAll("#fav");
+       f.forEach(e => e.classList.add("fav"));
+       
+
+for(let i=0;i<favs.length;i++)
+{
+
+    if(updated[i]==favs[i])
+    {
+
+        console.log("found ",searchResults[i]);
+
+        // favHandel(searchResults[i])
+    
+    }
+}
+
+              
+
+                   
+        // JSON.parse(localStorage.getItem("favorites")).some(c=> c.idDrink==11129)
+    //    console.log(getFavCocktail.some(fav=>fav.idDrink ==11129)); 
+
+
+   
+
+
+
+
     
         renderNextBatch();
 
@@ -155,13 +203,41 @@ const fetchRandomCocktail = async () => {
         resultsContainer.innerHTML += nextBatch.map(drink => `
             <div class="cocktail-card">
                 <li>
-                    <a href="#" id="see-more" class="see-more" data-id="${drink.idDrink}">${drink.strDrink}</a>
+                <button id="sfav"  aria-label="favorite" data-id="${drink.idDrink}" class=""></button>
+                <a href="#" id="see-more" class="see-more" data-id="${drink.idDrink}">${drink.strDrink}</a>
                     <img class="cocktail-img" src="${drink.strDrinkThumb}" alt="${drink.strDrink}">
+                   
                 </li>
             </div>
         `).join('');
 
-      
+        let res = JSON.parse(localStorage.getItem("favorites"));
+        let fav = document.querySelectorAll("#sfav");
+        fav.forEach(f=> {
+            f.classList.add("fav");
+            
+       console.log( f.getAttribute("data-id"));
+
+       for(let i=0;i<res.length;i++)
+       {
+
+     
+
+       if(f.getAttribute("data-id")==res[i].idDrink)
+       {
+        f.classList.remove("fav");
+        f.classList.add("fav-exist");
+        
+       
+       }
+    }
+console.log("handled")
+        })
+
+        
+        
+
+
         // resultsContainer.querySelectorAll(".see-more").addEventListener("click",()=>{
         //     showPage("details-content");
         //     console.log("clicked ")
@@ -175,6 +251,7 @@ const fetchRandomCocktail = async () => {
         
       window.addEventListener("click",(e)=>{
         console.log(e.target.id);
+        console.log("here ",e.target.className);
         if(e.target.id=="see-more")
         {
           
@@ -184,9 +261,15 @@ const fetchRandomCocktail = async () => {
                          console.log("u clicked")  
            
         }
-    })
+       
 
-    };
+
+    })
+  };
+
+  
+
+  
         
     document.addEventListener('submit', async (e) => {
         if (e.target.id === 'search-form') {
@@ -206,10 +289,13 @@ const fetchRandomCocktail = async () => {
                 document.getElementById('load-more-btn').style.display = 'block'; // Show the button
     
                 displaySearchResults(data.drinks, categoryValue, ingredientValue, glassValue);
+
             } else {
                 document.getElementById('search-results').innerHTML = '<li>No results found</li>';
                 document.getElementById('load-more-btn').style.display = 'none';
             }
+
+
         }
     });
     
@@ -221,7 +307,7 @@ const fetchRandomCocktail = async () => {
        
 
        
-        const favContent = document.getElementById("fav-content"); // Ensure this element exists in your HTML
+        const favContent = document.getElementById("fav-content"); 
     
         const favs = JSON.parse(localStorage.getItem("favorites")) || [];
             console.log(favs);
@@ -242,32 +328,30 @@ const fetchRandomCocktail = async () => {
             </div>
             `;
            
+
             favoritesList.appendChild(listItem);
             listItem.querySelector(".fav-exist"||"fav").addEventListener("click", (e) => {
                 
-            const cocktailId = e.target.getAttribute("data-id");
-      
-            if(e.target.className =="fav")
-            {
-                saveToFavorites(fav);
-                e.target.classList.add("fav-exist");
-                e.target.classList.remove("fav");
+const cocktailId = e.target.getAttribute("data-id");
+if(e.target.className=="fav")
+{
+    saveToFavorites(fav);
+    e.target.classList.add("fav-exist");
+    e.target.classList.remove("fav");
+    console.log("saved");
+    
+}
+else if(e.target.className=="fav-exist")
+{
+    removeFromFavorites(cocktailId);
+    console.log("removed ");
+    e.target.classList.add("fav");
+    e.target.classList.remove("fav-exist");
+}
 
-                console.log("saved")
-            }
-             else if(e.target.className=="fav-exist")
-            {
-                removeFromFavorites(cocktailId);
-                console.log("removed");
-                e.target.classList.add("fav");
-                e.target.classList.remove("fav-exist");
 
 
-            }
-            
-            
-                console.log("cocktail id   ", cocktailId);
-                console.log("here the value of the button > ",e.target);
+              console.log("here the value of the button > ",e.target);
 
                 // removeFromFavorites(cocktailId); 
                 // listItem.innerHTML ="";
@@ -290,27 +374,9 @@ const fetchRandomCocktail = async () => {
           
          showPage("details-content");
                     
-                    // detailsContent.style.display = "block"
-                         console.log("u clicked")  
            
         }
-        // if(e.target.id=="fav")
-        // {
-        //     console.log("button clicked in fav",favs)
-        // //     removeFromFavorites(favs[0]);
-        // //     favHandel(favs[0]);
-        //     console.log("here ",e.target);
-        //     console.log("here ",favs.idDrink);
-        //     console.log("favs[0]=  ",favs[0]);
-
-        //     favHandel(favs[0]);
-        //     removeFromFavorites(favs[0].idDrink)
-        // //     e.target.classList.add("fav");
-            
-        // //     console.log("button clicked in ",favs[0])
-        
-        // }
-                       
+              
     
     
       })
@@ -458,33 +524,35 @@ const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
    
     if(!exists)
     {
-        document.getElementById("fav").classList.add("fav")
-        document.getElementById("fav").classList.remove("fav-exist")
+        document.getElementById("homefav").classList.add("fav")
+        document.getElementById("homefav").classList.remove("fav-exist")
        
        console.log(cocktail.strDrink ,"    not exist in favorites")
+
+
     }
     else
     {
         console.log(cocktail.strDrink," is already added");
-        document.getElementById("fav").classList.add("fav-exist")
-        document.getElementById("fav").classList.remove("fav")
-        
+        document.getElementById("homefav").classList.add("fav-exist");
+        document.getElementById("homefav").classList.remove("fav");
+    
     }
-    document.getElementById("fav").addEventListener('click', (e) => {   
+    document.getElementById("homefav").addEventListener('click', (e) => {   
         console.log(e.target.className);
         if(e.target.className=="fav")
         {
 
             saveToFavorites(cocktail);
-            document.getElementById("fav").classList.add("fav-exist") 
-            document.getElementById("fav").classList.remove("fav")   
+            document.getElementById("homefav").classList.add("fav-exist") 
+            document.getElementById("homefav").classList.remove("fav")   
             console.log(cocktail.strDrink," added to the favorties  class : fav-exists")
         }
         else if(e.target.className=="fav-exist")
         {
             removeFromFavorites(cocktail.idDrink)
-            document.getElementById("fav").classList.add("fav") 
-            document.getElementById("fav").classList.remove("fav-exist") 
+            document.getElementById("homefav").classList.add("fav") 
+            document.getElementById("homefav").classList.remove("fav-exist") 
             console.log(cocktail.strDrink," removed from the favorties  class : fav")
   
        
@@ -524,8 +592,39 @@ function showPage(pageID)
 }    
 
 
+window.addEventListener("click",e=>{
+    
+    if(e.target.id=="sfav")
+    {
+        const cocktailId = e.target.getAttribute("data-id");
+        const res = searchResults.filter(c=>c.idDrink == cocktailId);
+        if(e.target.classList.contains("fav"))
+        {
+           
+        console.log(searchResults);
+        // localStorage.setItem("favorites",JSON.stringify(res));
+        saveToFavorites(res[0]);
+        e.target.classList.add("fav-exist");
+         e.target.classList.remove("fav");
+        console.log("saved");
+        
+            
+        }
+         else if(e.target.classList.contains("fav-exist"))
+        {
+           e.target.classList.remove("fav-exist");
+         e.target.classList.add("fav")
+            console.log(e.target.getAttribute("data-id"));
+            removeFromFavorites(e.target.getAttribute("data-id"))
+        console.log("removed");
+        
+        }
+    }
 
 
+   
+})
+ 
 
 
 
